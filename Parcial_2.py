@@ -21,7 +21,7 @@ class Calificaciones:
         self.proyeccion_e = self._validar(proyeccion_e)
         self.entrevista = self._validar(entrevista)
     def _validar(self, puntaje):
-        if not isinstance(puntaje, (int, float) and (0 <= puntaje <= 10)):
+        if not (isinstance(puntaje, (int, float)) and (0 <= puntaje <= 10)):
             raise ValueError("El puntaje debe de ser entre 0 - 10")
         return puntaje
     @property
@@ -122,7 +122,7 @@ class ConcursoApp:
         opciones.add_command(label = "Inscribir señorita", command = self.inscribir_participante)
         opciones.add_command(label="Añadir jurado", command=self.anadir_jurado)
         opciones.add_command(label="Calificar", command=self.calificar)
-        #opciones.add_command(label="Mostrar ranking", command=self.mostrar_ranking)
+        opciones.add_command(label="Mostrar ranking", command=self.mostrar_ranking)
         opciones.add_separator()
         opciones.add_command(label="Salir", command=self.ventana.quit)
         barra.add_cascade(label="Opciones", menu=opciones)
@@ -192,7 +192,7 @@ class ConcursoApp:
     def calificar(self):
         ventana_calificacion = tk.Toplevel(self.ventana)
         ventana_calificacion.title("Calificar participante")
-        ventana_calificacion.geometry("400x250")
+        ventana_calificacion.geometry("500x450")
         participantes_inscritas = self.concurso.conseguir_participante()
         jurados_inscritos = self.concurso.conseguir_jurado()
         if not participantes_inscritas:
@@ -213,7 +213,7 @@ class ConcursoApp:
         jurado_var.set(jurados_inscritos[0].nombre)
         jurado_menu = tk.OptionMenu(ventana_calificacion, jurado_var, *[j.nombre for j in jurados_inscritos])
         jurado_menu.pack(pady=5)
-        criterios = ["cultura_g", "proyección_e", "entrevista"]
+        criterios = ["cultura_g", "proyeccion_e", "entrevista"]
         entry_widget = {}
         for criterio in criterios:
             tk.Label(ventana_calificacion, text = f"Puntaje de {criterio} (0-10)").pack(pady = 2)
@@ -233,7 +233,7 @@ class ConcursoApp:
                     ventana_calificacion.destroy()
                 else:
                     messagebox.showinfo("Info", "No se encuentra la participante o el jurado")
-            except ValueError as e:
+            except ValueError:
                 messagebox.showerror("Error", "Todos los puntajes deben de ser números validos")
         tk.Button(ventana_calificacion, text = "Guardar", command = guardar_calificar).pack(pady = 10)
     def mostrar_ranking(self):
