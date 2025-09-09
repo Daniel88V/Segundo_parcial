@@ -188,5 +188,9 @@ class ConcursoApp:
                     ventana_calificacion.destroy()
                 else:
                     messagebox.showwarning("Info", "No se encuentra a la participante")
+            except ValueError as e:
+                messagebox.showerror("Error", "Todos los puntajes deben de ser números validos")
+        tk.Button(ventana_calificacion, text = "Guardar", command = guardar_calificar).pack(pady = 10)
+
 if __name__ == "__main__":
     ConcursoApp()
