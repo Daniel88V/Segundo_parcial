@@ -172,7 +172,7 @@ class ConcursoApp:
         entry_widget = {}
         for criterio in criterios:
             tk.Label(ventana_calificacion, text = f"Puntaje de {criterio} (0-10").pack(pady = 2)
-            entry =
+
 
 if __name__ == "__main__":
     ConcursoApp()
