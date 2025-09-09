@@ -10,7 +10,7 @@ class Candidatas:
     def mostrar_candidata(self):
         return f"Codigo: {self.codigo} | Nombre: {self.nombre} | Edad: {self.edad} | Institucion: {self.institucion} | Municipio: {self.municipio}"
 class Jurados:
-    def __init__(self, nombre, especialidad = "General"):
+    def __init__(self, nombre, especialidad = "N/A"):
         self.nombre = nombre
         self.especialidad = especialidad
     def mostrar_jurado(self):
