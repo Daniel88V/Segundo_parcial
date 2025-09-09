@@ -241,5 +241,19 @@ class ConcursoApp:
         ventana_ranking = tk.Toplevel(self.ventana)
         ventana_ranking.title("Ranking")
         ventana_ranking.geometry("400x250")
+        ranking_texto = tk.Text(ventana_ranking, wrap=tk.WORD)
+        ranking_texto.pack(expand=True, fill="both")
+        ranking_list = self.concurso.ranking()
+        if not ranking_list:
+            ranking_texto.insert(tk.END, "No hay participantes evaluadas para generar el ranking.")
+        else:
+            ranking_texto.insert(tk.END, "--- Ranking Final del Concurso ---")
+            for i, particpantes in enumerate(ranking_list, 1):
+                ranking_texto.insert(tk.END, f"Posición {i}: ")
+                ranking_texto.insert(tk.END, f"Nombre: {particpantes.nombre}")
+                ranking_texto.insert(tk.END, f"Institución: {particpantes.institucion}")
+                ranking_texto.insert(tk.END, f"Punteo: {particpantes.total:.2f}")
+                ranking_texto.insert(tk.END, "-" * 40 + "\n")
+
 if __name__ == "__main__":
     ConcursoApp()
