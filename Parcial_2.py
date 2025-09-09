@@ -43,11 +43,11 @@ class Participantes(Candidatas):
         return total_prom/len(self._calificaciones)
     def mostrar_puntajes(self):
         info = super().mostrar_candidata()
-        if self._puntajes:
-            info += f"Puntaje total: {self.total}"
-            info += f"Puntaje por criterio: {self._puntajes}"
-        else:
-            info += "No se ha registrado un puntaje"
+        info += f"\nPuntaje Final: {self.total:.2f}"
+        for jurado, calif in self._calificaciones.items():
+            info += f"\nPromedio del jurado {jurado}: {calif.promedio:.2f}"
+        if not self._calificaciones:
+            info += "\n- No se ha registrado ningún puntaje."
         return info
 class Concurso:
     def __init__(self):
@@ -64,6 +64,7 @@ class Concurso:
         return True
     def calificacion(self, nombre, puntaje):
         participante = self._buscar_participante(nombre)
+
         if participante:
             participante.registrar_puntajes(puntaje)
             return True
