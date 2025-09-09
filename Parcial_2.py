@@ -10,10 +10,19 @@ class Candidatas:
     def mostrar_candidata(self):
         return f"Codigo: {self.codigo} | Nombre: {self.nombre} | Edad: {self.edad} | Institucion: {self.institucion} | Municipio: {self.municipio}"
 class Jurados:
-    def __init__(self, nombre):
+    def __init__(self, nombre, especialidad = "General"):
         self.nombre = nombre
+        self.especialidad = especialidad
     def mostrar_jurado(self):
         return f"Jurado: {self.nombre}"
+class Calificaciones:
+    def __init__(self, cultura_g, proyeccion_e, entrevista):
+        self.cultura_g = cultura_g
+        self.proyeccion_e = proyeccion_e
+        self.entrevista = entrevista
+    @property
+    def promedio(self):
+        return (self.cultura_g + self.proyeccion_e + self.entrevista) / 3
 class Participantes(Candidatas):
     def __init__(self, codigo, nombre, edad, institucion, municipio):
         super().__init__(codigo, nombre, edad, institucion, municipio)
@@ -161,7 +170,7 @@ class ConcursoApp:
         ventana_calificacion.geometry("400x250")
         participantes_inscritas = self.concurso.conseguir_participante()
         if not participantes_inscritas:
-            messagebox.showinfo("Info", "No hay bandas inscritas")
+            messagebox.showinfo("Info", "No hay señoritas inscritas")
             ventana_calificacion.destroy()
             return
         tk.Label(ventana_calificacion, text = "Seleccione a la participante: ").pack(pady=5)
