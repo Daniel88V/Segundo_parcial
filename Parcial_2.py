@@ -213,7 +213,7 @@ class ConcursoApp:
         jurado_var.set(jurados_inscritos[0].nombre)
         jurado_menu = tk.OptionMenu(ventana_calificacion, jurado_var, *[j.nombre for j in jurados_inscritos])
         jurado_menu.pack(pady=5)
-        criterios = ["Cultura_G", "Proyección_E", "Entrevista"]
+        criterios = ["cultura_g", "proyección_e", "entrevista"]
         entry_widget = {}
         for criterio in criterios:
             tk.Label(ventana_calificacion, text = f"Puntaje de {criterio} (0-10)").pack(pady = 2)
@@ -225,15 +225,14 @@ class ConcursoApp:
             nombre_jurado_seleccionado = jurado_var.get()
             puntajes = {}
             try:
-                    for criterio, entry in entry_widget.items():
-                        puntaje = float(entry.get())
-                        puntajes[criterio] = puntaje
-                    if self.concurso.calificacion(participante_seleccionada, nombre_jurado_seleccionado,
-                                                  puntajes):
-                        messagebox.showinfo("Exito", "Calificado correctamente")
-                        ventana_calificacion.destroy()
-                    else:
-                        messagebox.showinfo("Info", "No se encuentra la participante o el jurado")
+                for criterio, entry in entry_widget.items():
+                    puntaje = float(entry.get())
+                    puntajes[criterio] = puntaje
+                if self.concurso.calificacion(participante_seleccionada, nombre_jurado_seleccionado, puntajes):
+                    messagebox.showinfo("Exito", "Calificado correctamente")
+                    ventana_calificacion.destroy()
+                else:
+                    messagebox.showinfo("Info", "No se encuentra la participante o el jurado")
             except ValueError as e:
                 messagebox.showerror("Error", "Todos los puntajes deben de ser números validos")
         tk.Button(ventana_calificacion, text = "Guardar", command = guardar_calificar).pack(pady = 10)
@@ -248,11 +247,11 @@ class ConcursoApp:
             ranking_texto.insert(tk.END, "No hay participantes evaluadas para generar el ranking.")
         else:
             ranking_texto.insert(tk.END, "--- Ranking Final del Concurso ---")
-            for i, particpantes in enumerate(ranking_list, 1):
+            for i, particpante in enumerate(ranking_list, 1):
                 ranking_texto.insert(tk.END, f"Posición {i}: ")
-                ranking_texto.insert(tk.END, f"Nombre: {particpantes.nombre}")
-                ranking_texto.insert(tk.END, f"Institución: {particpantes.institucion}")
-                ranking_texto.insert(tk.END, f"Punteo: {particpantes.total:.2f}")
+                ranking_texto.insert(tk.END, f"Nombre: {particpante.nombre}")
+                ranking_texto.insert(tk.END, f"Institución: {particpante.institucion}")
+                ranking_texto.insert(tk.END, f"Punteo: {particpante.total:.2f}")
                 ranking_texto.insert(tk.END, "-" * 40 + "\n")
 if __name__ == "__main__":
     ConcursoApp()
