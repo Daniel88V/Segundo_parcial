@@ -98,7 +98,7 @@ class Concurso:
         evaluacion = [p for p in self._participantes if p.total > 0]
         ranking_final =  sorted(
             evaluacion,
-            key=lambda p: (p.total, p.promedio_),
+            key=lambda p: (p.total, p.promedio_cultura_general),
             reverse=True
         )
         return ranking_final
