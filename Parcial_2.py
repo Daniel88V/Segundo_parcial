@@ -166,30 +166,35 @@ class ConcursoApp:
                 messagebox.showerror("Error de Validación", str(e))
         tk.Button(ventana_inscripcion, text = "Guardar", command = guardar).pack(pady = 10)
     def anadir_jurado(self):
-        ventana_inscripcion = tk.Toplevel(self.ventana)
-        ventana_inscripcion.title("Añadir jurado")
-        ventana_inscripcion.geometry("400x250")
-        tk.Label(ventana_inscripcion, text="Nombre del jurado: ").pack(pady=5)
-        nombre_entry = tk.Entry(ventana_inscripcion)
+        ventana_jurado = tk.Toplevel(self.ventana)
+        ventana_jurado.title("Añadir jurado")
+        ventana_jurado.geometry("400x250")
+        tk.Label(ventana_jurado, text="Nombre del jurado: ").pack(pady=5)
+        nombre_entry = tk.Entry(ventana_jurado)
         nombre_entry.pack(pady=5)
+        tk.Label(ventana_jurado, text="Especialidad (opcional): ").pack(pady=5)
+        especialidad_entry = tk.Entry(ventana_jurado)
+        especialidad_entry.pack(pady=5)
         def guardar_jurado():
             nombre = nombre_entry.get()
+            especialidad = especialidad_entry.get()
             if not nombre:
-                messagebox.showwarning("Error. Debe de ingresar el nombre")
+                messagebox.showwarning("Error", "Debe de ingresar el nombre")
                 return
             try:
-                nuevo_jurado = Jurados(nombre)
+                nuevo_jurado = Jurados(nombre, especialidad)
                 if self.concurso.anadir_jurado(nuevo_jurado):
-                    messagebox.showinfo("Exito", "Jurado se ha agregado correctamente")
-                    ventana_inscripcion.destroy()
+                    messagebox.showinfo("Exito", f"{nuevo_jurado.nombre} se ha agregado correctamente")
+                    ventana_jurado.destroy()
             except ValueError as e:
                 messagebox.showerror("Error de Validación", str(e))
-        tk.Button(ventana_inscripcion, text = "Guardar", command = guardar_jurado).pack(pady = 5)
+        tk.Button(ventana_jurado, text = "Guardar", command = guardar_jurado).pack(pady = 5)
     def calificar(self):
         ventana_calificacion = tk.Toplevel(self.ventana)
         ventana_calificacion.title("Calificar participante")
         ventana_calificacion.geometry("400x250")
         participantes_inscritas = self.concurso.conseguir_participante()
+        jurados_inscritos = self.concurso.conseguir_jurado()
         if not participantes_inscritas:
             messagebox.showinfo("Info", "No hay señoritas inscritas")
             ventana_calificacion.destroy()
