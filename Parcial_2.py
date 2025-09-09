@@ -199,11 +199,20 @@ class ConcursoApp:
             messagebox.showinfo("Info", "No hay señoritas inscritas")
             ventana_calificacion.destroy()
             return
+        if not jurados_inscritos:
+            messagebox.showinfo("Info", "No hay jurados inscritos")
+            ventana_calificacion.destroy()
+            return
         tk.Label(ventana_calificacion, text = "Seleccione a la participante: ").pack(pady=5)
         participante_var = tk.StringVar(ventana_calificacion)
         participante_var.set(participantes_inscritas[0].nombre)
         participante_menu = tk.OptionMenu(ventana_calificacion, participante_var, *[p.nombre for p in participantes_inscritas])
         participante_menu.pack(pady = 5)
+        tk.Label(ventana_calificacion, text="Seleccione al jurado:").pack(pady=5)
+        jurado_var = tk.StringVar(ventana_calificacion)
+        jurado_var.set(jurados_inscritos[0].nombre)
+        jurado_menu = tk.OptionMenu(ventana_calificacion, jurado_var, *[j.nombre for j in jurados_inscritos])
+        jurado_menu.pack(pady=5)
         criterios = ["Cultura_G", "Proyección_E", "Entrevista"]
         entry_widget = {}
         for criterio in criterios:
