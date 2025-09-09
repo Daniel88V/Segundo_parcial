@@ -21,7 +21,7 @@ class Calificaciones:
         self.proyeccion_e = self._validar(proyeccion_e)
         self.entrevista = self._validar(entrevista)
     def _validar(self, puntaje):
-        if not isinstance(puntaje, (int, float) or not (0 <= puntaje <= 10)):
+        if not isinstance(puntaje, (int, float) and (0 <= puntaje <= 10)):
             raise ValueError("El puntaje debe de ser entre 0 - 10")
         return puntaje
     @property
@@ -68,9 +68,9 @@ class Concurso:
     def anadir_jurado(self, jurado):
         self._jurados.append(jurado)
         return True
-    def calificacion(self, nombre, jurado, puntajes):
-        participante = self._buscar_participante(nombre)
-        jurado = self._buscar_jurado(jurado)
+    def calificacion(self, nombre_participante, nombre_jurado, puntajes):
+        participante = self._buscar_participante(nombre_participante)
+        jurado = self._buscar_jurado(nombre_jurado)
         if not participante or not jurado:
             return False
         try:
@@ -82,7 +82,7 @@ class Concurso:
             return False
     def _buscar_participante(self, nombre):
         for n in self._participantes:
-            if n.codigo.lower() == nombre.lower():
+            if n.nombre.lower() == nombre.lower():
                 return n
         return None
     def _buscar_jurado(self, nombre):
@@ -254,6 +254,5 @@ class ConcursoApp:
                 ranking_texto.insert(tk.END, f"Institución: {particpantes.institucion}")
                 ranking_texto.insert(tk.END, f"Punteo: {particpantes.total:.2f}")
                 ranking_texto.insert(tk.END, "-" * 40 + "\n")
-
 if __name__ == "__main__":
     ConcursoApp()
