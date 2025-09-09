@@ -173,6 +173,20 @@ class ConcursoApp:
         entry_widget = {}
         for criterio in criterios:
             tk.Label(ventana_calificacion, text = f"Puntaje de {criterio} (0-10").pack(pady = 2)
-
+            entry = tk.Entry(ventana_calificacion)
+            entry.pack(pady = 2)
+            entry_widget[criterio] = entry
+        def guardar_calificar():
+            participante_seleccionada = participante_var.get()
+            puntajes = {}
+            try:
+                for criterio, entry in entry_widget.items():
+                    puntaje = float(entry.get())
+                    puntajes[criterio] = puntaje
+                if self.concurso.calificacion(participante_seleccionada, puntajes):
+                    messagebox.showinfo("Exito", "Calificacion guardada correctamente")
+                    ventana_calificacion.destroy()
+                else:
+                    messagebox.showwarning("Info", "No se encuentra a la participante")
 if __name__ == "__main__":
     ConcursoApp()
