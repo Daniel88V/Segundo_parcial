@@ -130,7 +130,7 @@ class ConcursoApp:
     def inscribir_participante(self):
         ventana_inscripcion = tk.Toplevel(self.ventana)
         ventana_inscripcion.title("Inscribir señorita")
-        ventana_inscripcion.geometry("400x250")
+        ventana_inscripcion.geometry("500x350")
         tk.Label(ventana_inscripcion, text = "Código de participante: ").pack(pady = 5)
         codigo_entry = tk.Entry(ventana_inscripcion)
         codigo_entry.pack(pady = 5)
@@ -216,7 +216,7 @@ class ConcursoApp:
         criterios = ["Cultura_G", "Proyección_E", "Entrevista"]
         entry_widget = {}
         for criterio in criterios:
-            tk.Label(ventana_calificacion, text = f"Puntaje de {criterio} (0-10").pack(pady = 2)
+            tk.Label(ventana_calificacion, text = f"Puntaje de {criterio} (0-10)").pack(pady = 2)
             entry = tk.Entry(ventana_calificacion)
             entry.pack(pady = 2)
             entry_widget[criterio] = entry
