@@ -17,10 +17,10 @@ class Jurados:
         return f"Jurado: {self.nombre} |  Especialidad: {self.especialidad}"
 class Calificaciones:
     def __init__(self, cultura_g, proyeccion_e, entrevista):
-        self.cultura_g = self.validar(cultura_g)
-        self.proyeccion_e = self.validar(proyeccion_e)
-        self.entrevista = self.validar(entrevista)
-    def validar(self, puntaje):
+        self.cultura_g = self._validar(cultura_g)
+        self.proyeccion_e = self._validar(proyeccion_e)
+        self.entrevista = self._validar(entrevista)
+    def _validar(self, puntaje):
         if not isinstance(puntaje, (int, float) or not (0 <= puntaje <= 10)):
             raise ValueError("El puntaje debe de ser entre 0 - 10")
         return puntaje
@@ -73,6 +73,11 @@ class Concurso:
         for n in self._participantes:
             if n.codigo.lower() == nombre.lower():
                 return n
+        return None
+    def _buscar_jurado(self, nombre):
+        for j in self._jurados:
+            if j.nombre.lower() == nombre.lower():
+                return j
         return None
     def conseguir_participante(self):
         return self._participantes
