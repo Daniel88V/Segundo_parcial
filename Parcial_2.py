@@ -222,19 +222,24 @@ class ConcursoApp:
             entry_widget[criterio] = entry
         def guardar_calificar():
             participante_seleccionada = participante_var.get()
+            nombre_jurado_seleccionado = jurado_var.get()
             puntajes = {}
             try:
-                for criterio, entry in entry_widget.items():
-                    puntaje = float(entry.get())
-                    puntajes[criterio] = puntaje
-                if self.concurso.calificacion(participante_seleccionada, puntajes):
-                    messagebox.showinfo("Exito", "Calificacion guardada correctamente")
-                    ventana_calificacion.destroy()
-                else:
-                    messagebox.showwarning("Info", "No se encuentra a la participante")
+                    for criterio, entry in entry_widget.items():
+                        puntaje = float(entry.get())
+                        puntajes[criterio] = puntaje
+                    if self.concurso.calificacion(participante_seleccionada, nombre_jurado_seleccionado,
+                                                  puntajes):
+                        messagebox.showinfo("Exito", "Calificado correctamente")
+                        ventana_calificacion.destroy()
+                    else:
+                        messagebox.showinfo("Info", "No se encuentra la participante o el jurado")
             except ValueError as e:
                 messagebox.showerror("Error", "Todos los puntajes deben de ser números validos")
         tk.Button(ventana_calificacion, text = "Guardar", command = guardar_calificar).pack(pady = 10)
-
+    def mostrar_ranking(self):
+        ventana_ranking = tk.Toplevel(self.ventana)
+        ventana_ranking.title("Ranking")
+        ventana_ranking.geometry("400x250")
 if __name__ == "__main__":
     ConcursoApp()
