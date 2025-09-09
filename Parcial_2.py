@@ -14,31 +14,33 @@ class Jurados:
         self.nombre = nombre
         self.especialidad = especialidad
     def mostrar_jurado(self):
-        return f"Jurado: {self.nombre}"
+        return f"Jurado: {self.nombre} |  Especialidad: {self.especialidad}"
 class Calificaciones:
     def __init__(self, cultura_g, proyeccion_e, entrevista):
-        self.cultura_g = cultura_g
-        self.proyeccion_e = proyeccion_e
-        self.entrevista = entrevista
+        self.cultura_g = self.validar(cultura_g)
+        self.proyeccion_e = self.validar(proyeccion_e)
+        self.entrevista = self.validar(entrevista)
+    def validar(self, puntaje):
+        if not isinstance(puntaje, (int, float) or not (0 <= puntaje <= 10)):
+            raise ValueError("El puntaje debe de ser entre 0 - 10")
+        return puntaje
     @property
     def promedio(self):
         return (self.cultura_g + self.proyeccion_e + self.entrevista) / 3
 class Participantes(Candidatas):
     def __init__(self, codigo, nombre, edad, institucion, municipio):
         super().__init__(codigo, nombre, edad, institucion, municipio)
-        self._puntajes = {}
-        self.jurados_total = {}
-    def registrar_puntajes(self, puntajes):
-        criterios = ["Cultura_G", "Proyección_E", "Entrevista"]
-        if not all(criterio in puntajes for criterio in criterios):
-            raise ValueError("Faltan criterios por llenar")
-        for criterio, puntaje in puntajes.items():
-            if not isinstance(puntaje, (int, float)) or not (0 <= puntaje <= 10):
-                raise ValueError(f"Error. El puntaje para {criterio} debe de ser entre 0 y 10.")
-            self._puntajes[criterio] = puntaje
+        self._calificaciones = {}
+    def registrar_puntajes(self, jurado, calificacion):
+        if not isinstance(calificacion, Calificaciones):
+            raise TypeError("Calificaciones debe ser un objeto")
+        self._calificaciones[jurado] = calificacion
     @property
     def total(self):
-        return (sum(self._puntajes.values()))/3 if self._puntajes else 0
+        if not self._calificaciones:
+            return 0
+        total_prom = sum(c.promedio for c in self._calificaciones.values())
+        return total_prom/len(self._calificaciones)
     def mostrar_puntajes(self):
         info = super().mostrar_candidata()
         if self._puntajes:
