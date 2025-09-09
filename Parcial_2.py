@@ -41,6 +41,12 @@ class Participantes(Candidatas):
             return 0
         total_prom = sum(c.promedio for c in self._calificaciones.values())
         return total_prom/len(self._calificaciones)
+    @property
+    def promedio_cultura_general(self):
+        if not self._calificaciones:
+            return 0
+        total_cultura = sum(c.cultura_g for c in self._calificaciones.values())
+        return total_cultura / len(self._calificaciones)
     def mostrar_puntajes(self):
         info = super().mostrar_candidata()
         info += f"\nPuntaje Final: {self.total:.2f}"
@@ -62,13 +68,18 @@ class Concurso:
     def anadir_jurado(self, jurado):
         self._jurados.append(jurado)
         return True
-    def calificacion(self, nombre, puntaje):
+    def calificacion(self, nombre, jurado, puntajes):
         participante = self._buscar_participante(nombre)
-
-        if participante:
-            participante.registrar_puntajes(puntaje)
+        jurado = self._buscar_jurado(jurado)
+        if not participante or not jurado:
+            return False
+        try:
+            nueva_calificacion = Calificaciones(**puntajes)
+            participante.registrar_puntajes(jurado.nombre, nueva_calificacion)
             return True
-        return False
+        except(TypeError, ValueError) as e:
+            messagebox.showerror("Error de califiación", str(e))
+            return False
     def _buscar_participante(self, nombre):
         for n in self._participantes:
             if n.codigo.lower() == nombre.lower():
@@ -81,11 +92,13 @@ class Concurso:
         return None
     def conseguir_participante(self):
         return self._participantes
+    def conseguir_jurado(self):
+        return self._jurados
     def ranking(self):
         evaluacion = [p for p in self._participantes if p.total > 0]
         ranking_final =  sorted(
             evaluacion,
-            key=lambda p: (p.total, p._puntajes.get("Cultura_G", 0)),
+            key=lambda p: (p.total, p.promedio_),
             reverse=True
         )
         return ranking_final
