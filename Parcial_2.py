@@ -59,6 +59,25 @@ class Concurso:
     def __init__(self):
         self._participantes = []
         self._jurados = []
+    def cargar_datos(self):
+        self._participantes = []
+        self._jurados = []
+        try:
+            with open("Participantes.txt", "r", encoding="utf-8") as f:
+                for linea in f:
+                    codigo,nombre,edad,institucion,municipio = linea.strip().split(":")
+                    self._participantes.append(Participantes(codigo, nombre, edad,institucion, municipio))
+            print("Participantes cargadas")
+        except FileNotFoundError:
+            print("No existe el archivo Participantes.txt, se creara")
+        try:
+            with open("jurados.txt", "r", encoding="utf-8") as f:
+                for linea in f:
+                    nombre, especialidad = linea.strip().split(":")
+                    self._jurados.append(Jurados(nombre, especialidad))
+            print("Jurados cargados")
+        except FileNotFoundError:
+            print("")
     def inscribir_participantes(self, participante):
         for p in self._participantes:
             if p.codigo.lower() == participante.codigo.lower():
@@ -239,19 +258,19 @@ class ConcursoApp:
     def mostrar_ranking(self):
         ventana_ranking = tk.Toplevel(self.ventana)
         ventana_ranking.title("Ranking")
-        ventana_ranking.geometry("400x250")
+        ventana_ranking.geometry("500x400")
         ranking_texto = tk.Text(ventana_ranking, wrap=tk.WORD)
         ranking_texto.pack(expand=True, fill="both")
         ranking_list = self.concurso.ranking()
         if not ranking_list:
             ranking_texto.insert(tk.END, "No hay participantes evaluadas para generar el ranking.")
         else:
-            ranking_texto.insert(tk.END, "--- Ranking Final del Concurso ---")
+            ranking_texto.insert(tk.END, "--- Ranking Final del Concurso ---\n\n")
             for i, particpante in enumerate(ranking_list, 1):
-                ranking_texto.insert(tk.END, f"Posición {i}: ")
-                ranking_texto.insert(tk.END, f"Nombre: {particpante.nombre}")
-                ranking_texto.insert(tk.END, f"Institución: {particpante.institucion}")
-                ranking_texto.insert(tk.END, f"Punteo: {particpante.total:.2f}")
+                ranking_texto.insert(tk.END, f"Posición {i}: \n")
+                ranking_texto.insert(tk.END, f"Nombre: {particpante.nombre}\n")
+                ranking_texto.insert(tk.END, f"Institución: {particpante.institucion}\n")
+                ranking_texto.insert(tk.END, f"Punteo: {particpante.total:.2f}\n")
                 ranking_texto.insert(tk.END, "-" * 40 + "\n")
 if __name__ == "__main__":
     ConcursoApp()
