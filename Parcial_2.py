@@ -172,7 +172,7 @@ class ConcursoApp:
         opciones.add_command(label = "Inscribir señorita", command = self.inscribir_participante)
         opciones.add_command(label="Añadir jurado", command=self.anadir_jurado)
         opciones.add_command(label="Calificar", command=self.calificar)
-        opciones.add_command(label="Mostrar ranking", command=self.mostrar_ranking)
+        opciones.add_command(label="Mostrar Ranking", command=self.mostrar_ranking)
         opciones.add_command(label="Mostrar Ganadora", command=self.mostrar_ganadora)
         opciones.add_separator()
         opciones.add_command(label="Salir", command=self.ventana.quit)
