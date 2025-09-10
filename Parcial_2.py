@@ -59,9 +59,8 @@ class Concurso:
     def __init__(self):
         self._participantes = []
         self._jurados = []
+        self.cargar_datos()
     def cargar_datos(self):
-        self._participantes = []
-        self._jurados = []
         try:
             with open("Participantes.txt", "r", encoding="utf-8") as f:
                 for linea in f:
@@ -82,32 +81,31 @@ class Concurso:
             with open("calificaciones.txt", "r", encoding="utf-8") as f:
                 for linea in f:
                     partes = linea.strip().split(":")
-                    nombre = partes[0]
+                    nombre_participante = partes[0]
+                    nombre_jurado = partes[1]
                     puntajes = {
-                        "cultura_g": float(partes[1]),
-                        "proyeccion_e": float(partes[2]),
-                        "entrevista": float(partes[3]),
+                        "cultura_g": float(partes[2]),
+                        "proyeccion_e": float(partes[3]),
+                        "entrevista": float(partes[4]),
                     }
-                    participante = self._buscar_participante(nombre)
+                    participante = self._buscar_participante(nombre_participante)
                     if participante:
-                        participante.registrar_puntajes(puntajes)
+                        nueva_calificacion = Calificaciones(**puntajes)
+                        participante.registrar_puntajes(nombre_jurado, nueva_calificacion)
             print("Calificaciones cargadas")
         except FileNotFoundError:
             print("No existe Calificaiones.txt, se creara")
     def guardar_datos(self):
         with open("Participantes.txt", "w", encoding="utf-8") as f:
-            for participante in self._participantes:
-                f.write(f"{participante.nombre}:{participante.edad}:{participante.institucion}:{participante.municipio}\n")
+            for p in self._participantes:
+                f.write(f"{p.codigo}:{p.nombre}:{p.edad}:{p.institucion}:{p.municipio}\n")
         with open("Jurados.txt", "w", encoding="utf-8") as f:
-            for jurado in self._jurados:
-                f.write(f"{jurado.nombre}:{jurado.especialidad}")
+            for j in self._jurados:
+                f.write(f"{j.nombre}:{j.especialidad}\n")
         with open("Calificaciones.txt", "w", encoding="utf-8") as f:
-            for participante in self._participantes:
-                if participante.registrar_puntajes:
-                    f.write(
-                        f"{participante.nombre}:{participante.registrar_puntajes["cultura_g"]}:{participante.registrar_puntajes["proyeccion_e"]}:"
-                        f"{participante.registrar_puntajes["entrevista"]}"
-                    )
+            for p in self._participantes:
+                for jurado_nombre, calif in p._calificaciones.items():
+                    f.write(f"{p.nombre}:{jurado_nombre}:{calif.cultura_g}:{calif.proyeccion_e}:{calif.entrevista}\n")
     def inscribir_participantes(self, participante):
         for p in self._participantes:
             if p.codigo.lower() == participante.codigo.lower():
@@ -175,6 +173,7 @@ class ConcursoApp:
         opciones.add_command(label="Añadir jurado", command=self.anadir_jurado)
         opciones.add_command(label="Calificar", command=self.calificar)
         opciones.add_command(label="Mostrar ranking", command=self.mostrar_ranking)
+        opciones.add_command(label="Mostrar Ganadora", command=self.mostrar_ganadora)
         opciones.add_separator()
         opciones.add_command(label="Salir", command=self.ventana.quit)
         barra.add_cascade(label="Opciones", menu=opciones)
@@ -305,5 +304,18 @@ class ConcursoApp:
                 ranking_texto.insert(tk.END, f"Institución: {particpante.institucion}\n")
                 ranking_texto.insert(tk.END, f"Punteo: {particpante.total:.2f}\n")
                 ranking_texto.insert(tk.END, "-" * 40 + "\n")
+
+    def mostrar_ganadora(self):
+        ventana_ganadora = tk.Toplevel(self.ventana)
+        ventana_ganadora.title("Ganadora")
+        ventana_ganadora.geometry("400x150")
+        ranking = self.concurso.ranking()
+        if not ranking:
+            tk.Label(ventana_ganadora, text="No hay participantes calificadas para determinar la ganadora.",
+                     pady=20).pack()
+            return
+        ganadora = ranking[0]
+        mensaje = f"La ganadora es:\n\n{ganadora.nombre}\n\nCon un puntaje final de: {ganadora.total:.2f}"
+        tk.Label(ventana_ganadora, text=mensaje, justify="center", font=("Times New Roman", 12, "bold")).pack(pady=20)
 if __name__ == "__main__":
     ConcursoApp()
