@@ -77,15 +77,47 @@ class Concurso:
                     self._jurados.append(Jurados(nombre, especialidad))
             print("Jurados cargados")
         except FileNotFoundError:
-            print("")
+            print("No existe el archivo Jurados.txt, se creara")
+        try:
+            with open("calificaciones.txt", "r", encoding="utf-8") as f:
+                for linea in f:
+                    partes = linea.strip().split(":")
+                    nombre = partes[0]
+                    puntajes = {
+                        "cultura_g": float(partes[1]),
+                        "proyeccion_e": float(partes[2]),
+                        "entrevista": float(partes[3]),
+                    }
+                    participante = self._buscar_participante(nombre)
+                    if participante:
+                        participante.registrar_puntajes(puntajes)
+            print("Calificaciones cargadas")
+        except FileNotFoundError:
+            print("No existe Calificaiones.txt, se creara")
+    def guardar_datos(self):
+        with open("Participantes.txt", "w", encoding="utf-8") as f:
+            for participante in self._participantes:
+                f.write(f"{participante.nombre}:{participante.edad}:{participante.institucion}:{participante.municipio}\n")
+        with open("Jurados.txt", "w", encoding="utf-8") as f:
+            for jurado in self._jurados:
+                f.write(f"{jurado.nombre}:{jurado.especialidad}")
+        with open("Calificaciones.txt", "w", encoding="utf-8") as f:
+            for participante in self._participantes:
+                if participante.registrar_puntajes:
+                    f.write(
+                        f"{participante.nombre}:{participante.registrar_puntajes["cultura_g"]}:{participante.registrar_puntajes["proyeccion_e"]}:"
+                        f"{participante.registrar_puntajes["entrevista"]}"
+                    )
     def inscribir_participantes(self, participante):
         for p in self._participantes:
             if p.codigo.lower() == participante.codigo.lower():
                 return False
         self._participantes.append(participante)
+        self.guardar_datos()
         return True
     def anadir_jurado(self, jurado):
         self._jurados.append(jurado)
+        self.guardar_datos()
         return True
     def calificacion(self, nombre_participante, nombre_jurado, puntajes):
         participante = self._buscar_participante(nombre_participante)
@@ -95,6 +127,7 @@ class Concurso:
         try:
             nueva_calificacion = Calificaciones(**puntajes)
             participante.registrar_puntajes(jurado.nombre, nueva_calificacion)
+            self.guardar_datos()
             return True
         except(TypeError, ValueError) as e:
             messagebox.showerror("Error de califiación", str(e))
